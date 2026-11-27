@@ -655,6 +655,12 @@ body.indet.fishdet #fishBg{display:block}
 #fishBg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,32,74,.55),rgba(7,32,74,.35) 45%,rgba(7,32,74,.6))}
 
 #map{scroll-margin-top:90px}
+
+/* ===== أخضر عند الاختيار + نيون على زر الرسم ===== */
+.rdd-t:not(.ph){border-color:#39ff88!important;background:linear-gradient(145deg,rgba(57,255,136,.34),rgba(22,170,96,.22))!important;box-shadow:0 0 0 1px rgba(57,255,136,.6),0 0 14px rgba(57,255,136,.38)!important}
+.route .rprim.ready{border-color:#39ff88!important;box-shadow:0 0 0 2px #39ff88,0 0 14px 2px rgba(57,255,136,.9),0 0 34px 6px rgba(57,255,136,.55)!important;animation:rneon 1.8s ease-in-out infinite}
+@keyframes rneon{0%,100%{box-shadow:0 0 0 2px #39ff88,0 0 12px 1px rgba(57,255,136,.8),0 0 26px 3px rgba(57,255,136,.45)}50%{box-shadow:0 0 0 2px #7dffb3,0 0 20px 4px rgba(57,255,136,1),0 0 44px 10px rgba(57,255,136,.65)}}
+@media (prefers-reduced-motion:reduce){.route .rprim.ready{animation:none}}
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri+Quran&display=swap">
 <link rel="manifest" href="manifest.json">
@@ -1246,7 +1252,7 @@ $("rswap").onclick=()=>{const f=$("rfrom"),t=$("rto");if(f.value==="__me")return
  function sync(id){const d=dd[id];if(!d)return;const sel=d.sel,v=sel.value,opts=[...sel.options];
   const cur=opts.find(o=>o.value===v&&v!==""),ph=opts.find(o=>o.value==="");
   d.tx.textContent=cur?cur.textContent:(ph?ph.textContent:"");d.t.classList.toggle("ph",!cur);
-  d.m.innerHTML=opts.filter(o=>o.value!=="").map(o=>`<button type="button" class="rdd-o${o.value==="__me"?" me":""}" role="option" data-v="${esc(o.value)}" aria-selected="${o.value===v}">${esc(o.textContent)}</button>`).join("")}
+  d.m.innerHTML=opts.filter(o=>o.value!=="").map(o=>`<button type="button" class="rdd-o${o.value==="__me"?" me":""}" role="option" data-v="${esc(o.value)}" aria-selected="${o.value===v}">${esc(o.textContent)}</button>`).join("");try{const b=document.getElementById("rdraw"),f=document.getElementById("rfrom"),o=document.getElementById("rto");if(b&&f&&o)b.classList.toggle("ready",!!f.value&&!!o.value)}catch(e){}}
  function open(id){const d=dd[id];if(!d)return;closeAll();sync(id);d.m.hidden=false;d.t.setAttribute("aria-expanded","true");
   const s=d.m.querySelector('[aria-selected="true"]');if(s)d.m.scrollTop=Math.max(0,s.offsetTop-d.m.offsetHeight/2+s.offsetHeight/2);
   setTimeout(()=>{try{d.m.scrollIntoView({block:"nearest",behavior:"smooth"})}catch(e){}},30)}
