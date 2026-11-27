@@ -653,6 +653,8 @@ html,body{overflow-x:clip;max-width:100%}
 body.indet.fishdet #fishBg{display:block}
 #fishBg video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 50%;display:block}
 #fishBg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,32,74,.55),rgba(7,32,74,.35) 45%,rgba(7,32,74,.6))}
+
+#map{scroll-margin-top:90px}
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri+Quran&display=swap">
 <link rel="manifest" href="manifest.json">
@@ -1285,7 +1287,7 @@ function showRoadInfo(rt){const el=$("roadinfo");if(!el)return;const f0=$("rfrom
 function dropRoute(){try{RTOK++;if(map&&window.PG&&map.hasLayer(window.PG))map.removeLayer(window.PG);if(map&&window.PGS)for(const k in window.PGS)if(map.hasLayer(window.PGS[k].g))map.removeLayer(window.PGS[k].g);const r=$("rres");if(r)r.textContent="";window.P2ON=null;routeSpots(false);clearRoute()}catch(e){}}
 ["rfrom","rto"].forEach(id=>{const e=$(id);if(e)e.addEventListener("change",()=>{dropRoute();try{showRoadInfo(null)}catch(e){}})});
 {const sw=$("rswap");if(sw)sw.addEventListener("click",()=>setTimeout(()=>{dropRoute();try{showRoadInfo(null)}catch(e){}},0))}
-$("rdraw").onclick=async()=>{const out=$("rres");if(!$("rfrom").value||!$("rto").value){out.textContent="اختار نقطة البداية (من) ونقطة الوصول (إلى).";return}out.textContent="كنحسبو الطريق…";const tok=++RTOK;
+$("rdraw").onclick=async()=>{const out=$("rres");if(!$("rfrom").value||!$("rto").value){out.textContent="اختار نقطة البداية (من) ونقطة الوصول (إلى).";return}out.textContent="كنحسبو الطريق…";const tok=++RTOK;try{const mp=$("map");if(mp)mp.scrollIntoView({behavior:"smooth",block:"start"})}catch(e){}
  try{const a=await getPt($("rfrom").value),b=await getPt($("rto").value),mode=$("rmode").value;if(tok!==RTOK)return;
   const base=mode==="walking"?"https://routing.openstreetmap.de/routed-foot/route/v1/driving/":"https://router.project-osrm.org/route/v1/driving/";
   const r=await fetch(base+a[1]+","+a[0]+";"+b[1]+","+b[0]+"?overview=full&geometries=geojson");const j=await r.json();
