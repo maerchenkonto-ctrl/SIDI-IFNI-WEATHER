@@ -770,8 +770,8 @@ body.indet.fishdet #fishBg{display:block}
 <button type="button" id="backBtn2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg><span>الرجوع</span></button>
 
 <nav class="nav" id="nav">
-  <button data-v="map"><span data-ic="map"></span>الخريطة</button>
   <button data-v="fc" aria-current="page"><span data-ic="pulse"></span>التوقعات</button>
+  <button data-v="map"><span data-ic="map"></span>الخريطة</button>
   <button data-v="kit"><span data-ic="kit"></span>العدّة</button>
 </nav>
 
@@ -1224,7 +1224,6 @@ window.addEventListener("popstate",closeDetail);
 $("rubs").addEventListener("click",e=>{const d=e.target.closest(".rub");if(!d)return;e.preventDefault();if(d.dataset.k==="sun")return;openDetail(K2T[d.dataset.k])});
 $("tabs").onclick=e=>{const b=e.target.closest("button");if(!b)return;if(inDetail){TAB=b.dataset.t;syncDetail();renderAll()}else openDetail(b.dataset.t)};
 function setView(v){
-  try{localStorage.setItem("sayd-view",v)}catch(e){}
   const wasMap=!$("v-map").hidden;
   ["fc","map","kit"].forEach(k=>$("v-"+k).hidden=k!==v);
   document.querySelectorAll("#nav button").forEach(b=>b.toggleAttribute("aria-current",b.dataset.v===v)||0);
@@ -1397,7 +1396,6 @@ function initMap(){
 const ITEMS=["قصبة الصيد و موليني/ماكينة", "الصنانر بجميع الاحجام، لبلوم الخفيف و التقيل", "طعوم مختلفة، على الاقل نوعين بالنسبة للسورف كاستين اما الجر فلا بد يكونو عندك جميع الانواع", "خيوط حسب نوع الصيد: نايلون، فليوكربون ، لاتريس", "ملقاط ومقص و موس", "ضو ديال الراس وحجار زايدين", "صباط ضد الانزلاق", "قفازات، وقبعة تحميك من الشمس", "تليفون مشحون وفيه تعبئة، powerbank، خيط الشارجور", "قرعة ديال الماء و الماكلة", "الإسعافات الأولية", "كيس باش دير فيه الزبل", "محفظة او اقراب"];
 let saved={};try{saved=JSON.parse(localStorage.getItem("sayd-check")||"{}")}catch(e){}
 $("check").innerHTML=ITEMS.map((t,i)=>`<label${saved[i]?' class="on"':""}><input type="checkbox" data-i="${i}" ${saved[i]?"checked":""}> ${t}</label>`).join("");
-try{const lv=localStorage.getItem("sayd-view");if(lv==="kit")setView("kit");else if(lv==="map")addEventListener("load",()=>setView("map"))}catch(e){}
 $("check").onchange=e=>{saved[e.target.dataset.i]=e.target.checked;e.target.closest("label").classList.toggle("on",e.target.checked);try{localStorage.setItem("sayd-check",JSON.stringify(saved))}catch(err){}};
 
 document.querySelectorAll("[data-ic]").forEach(e=>e.innerHTML=ic(e.dataset.ic));{const pc=document.getElementById("praycard");pc.querySelector("summary").addEventListener("click",e=>e.preventDefault())}document.querySelectorAll("[data-sun]").forEach(e=>e.innerHTML=sunSym(1,1));
