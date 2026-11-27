@@ -1221,20 +1221,22 @@ window.addEventListener("popstate",closeDetail);
 $("rubs").addEventListener("click",e=>{const d=e.target.closest(".rub");if(!d)return;e.preventDefault();if(d.dataset.k==="sun")return;openDetail(K2T[d.dataset.k])});
 $("tabs").onclick=e=>{const b=e.target.closest("button");if(!b)return;if(inDetail){TAB=b.dataset.t;syncDetail();renderAll()}else openDetail(b.dataset.t)};
 function setView(v){
+  const wasMap=!$("v-map").hidden;
   ["fc","map","kit"].forEach(k=>$("v-"+k).hidden=k!==v);
   document.querySelectorAll("#nav button").forEach(b=>b.toggleAttribute("aria-current",b.dataset.v===v)||0);
   document.querySelectorAll("#nav button").forEach(b=>b.dataset.v===v?b.setAttribute("aria-current","page"):b.removeAttribute("aria-current"));
   document.body.classList.toggle("vwother",v!=="fc");
   if(v==="map")fillRoute();
   {const bv=document.getElementById("mapBgVid");if(bv){bv.muted=true;if(v==="map"&&!(window.matchMedia&&matchMedia("(prefers-reduced-motion:reduce)").matches)){const p=bv.play();if(p&&p.catch)p.catch(()=>{})}else bv.pause()}}
-  if(v==="map"){if(!mapReady)initMap();if(map)setTimeout(()=>map.invalidateSize(),50)}
+  if(v==="map"){if(!mapReady)initMap();if(map)setTimeout(()=>map.invalidateSize(),50);if(!wasMap)mapReset()}
 }
+function mapReset(){try{const c=$("rclear");if(c)c.click();const m=$("rmode");if(m)m.value="driving";document.querySelectorAll(".rmodeb").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.m==="driving")));const r=$("rres");if(r)r.textContent="";const ri=$("roadinfo");if(ri)ri.hidden=true}catch(e){}}
 
 /* ---------- الطريق (OSRM + Google Maps) ---------- */
 let RL=null,RM=[],RINIT=false;
 function fillRoute(){const f=$("rfrom"),t=$("rto");if(!f||!t)return;const pf=f.value,pt=t.value,names=Object.keys(SPOTS).map(k=>`<option value="${esc(k)}">${esc(k)}</option>`).join("");
  f.innerHTML='<option value="">— اختر نقطة البداية —</option><option value="__me">📍 موقعي الحالي</option>'+names;t.innerHTML='<option value="">— اختر نقطة الوصول —</option>'+names;
- if(!RINIT){RINIT=true;f.value="__me";t.value=state.name in SPOTS?state.name:"";return}
+ if(!RINIT){RINIT=true;f.value="";t.value="";return}
  f.value=[...f.options].some(o=>o.value===pf)?pf:"";
  t.value=[...t.options].some(o=>o.value===pt)?pt:""}
 function getPt(v){return new Promise((res,rej)=>{if(v!=="__me"){const c=SPOTS[v];return c?res(c):rej(new Error("spot"))}
