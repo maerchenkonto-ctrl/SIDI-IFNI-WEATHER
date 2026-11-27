@@ -251,6 +251,9 @@ ul.tips li{border-inline-start:3px solid var(--sun)}
 #map{border-radius:20px;box-shadow:0 0 0 2px rgba(255,255,255,.2)}
 .check label{background:rgba(7,32,74,.45);border-radius:12px;padding:6px 10px}
 .check input{accent-color:var(--sun)}
+.check input{flex:none;width:22px;height:22px;min-width:22px;margin:0}
+.check label{border:2px solid transparent;transition:box-shadow .2s,border-color .2s}
+.check label.on{border-color:#39ff14;box-shadow:0 0 6px rgba(57,255,20,.7),0 0 16px rgba(57,255,20,.4),inset 0 0 8px rgba(57,255,20,.25)}
 .rub[data-k=fish]{--rgb:120,220,100;--ac:#8be36a}
 #v-fc[data-k=fish]{--rgb:120,220,100;--ac:#8be36a}
 #v-fc:not(.detail) .tabs{display:none}
@@ -1221,6 +1224,7 @@ window.addEventListener("popstate",closeDetail);
 $("rubs").addEventListener("click",e=>{const d=e.target.closest(".rub");if(!d)return;e.preventDefault();if(d.dataset.k==="sun")return;openDetail(K2T[d.dataset.k])});
 $("tabs").onclick=e=>{const b=e.target.closest("button");if(!b)return;if(inDetail){TAB=b.dataset.t;syncDetail();renderAll()}else openDetail(b.dataset.t)};
 function setView(v){
+  try{localStorage.setItem("sayd-view",v)}catch(e){}
   const wasMap=!$("v-map").hidden;
   ["fc","map","kit"].forEach(k=>$("v-"+k).hidden=k!==v);
   document.querySelectorAll("#nav button").forEach(b=>b.toggleAttribute("aria-current",b.dataset.v===v)||0);
@@ -1390,10 +1394,11 @@ function initMap(){
   const add=e=>{const n=(prompt("سمية السبوط؟")||"").trim().slice(0,40);if(!n||SPOTS[n])return;const c=[+e.latlng.lat.toFixed(5),+e.latlng.lng.toFixed(5)];MINE[n]=c;SPOTS[n]=c;saveMine();drawMarkers();refreshSelect();pick(n)};
   map.on("contextmenu",add);map.on("dblclick",add);
 }
-const ITEMS=["قصبة السبينينغ ورولو","الخيط والليدرات","الطُعوم (بلاغ، جيغ، سوفت)","بنسة وقصاص","مخطاف الإنقاذ أو شبكة","ماء وماكلة","فانوس راس","حذاء ما كيتزلقش","ستر النجاة","تلفون مشحون","كيس زبل","إسعافات أولية","قفاز وقبعة"];
+const ITEMS=["قصبة الصيد و موليني/ماكينة", "الصنانر بجميع الاحجام، لبلوم الخفيف و التقيل", "طعوم مختلفة، على الاقل نوعين بالنسبة للسورف كاستين اما الجر فلا بد يكونو عندك جميع الانواع", "خيوط حسب نوع الصيد: نايلون، فليوكربون ، لاتريس", "ملقاط ومقص و موس", "ضو ديال الراس وحجار زايدين", "صباط ضد الانزلاق", "قفازات، وقبعة تحميك من الشمس", "تليفون مشحون وفيه تعبئة، powerbank، خيط الشارجور", "قرعة ديال الماء و الماكلة", "الإسعافات الأولية", "كيس باش دير فيه الزبل", "محفظة او اقراب"];
 let saved={};try{saved=JSON.parse(localStorage.getItem("sayd-check")||"{}")}catch(e){}
-$("check").innerHTML=ITEMS.map((t,i)=>`<label><input type="checkbox" data-i="${i}" ${saved[i]?"checked":""}> ${t}</label>`).join("");
-$("check").onchange=e=>{saved[e.target.dataset.i]=e.target.checked;try{localStorage.setItem("sayd-check",JSON.stringify(saved))}catch(err){}};
+$("check").innerHTML=ITEMS.map((t,i)=>`<label${saved[i]?' class="on"':""}><input type="checkbox" data-i="${i}" ${saved[i]?"checked":""}> ${t}</label>`).join("");
+try{const lv=localStorage.getItem("sayd-view");if(lv==="kit")setView("kit");else if(lv==="map")addEventListener("load",()=>setView("map"))}catch(e){}
+$("check").onchange=e=>{saved[e.target.dataset.i]=e.target.checked;e.target.closest("label").classList.toggle("on",e.target.checked);try{localStorage.setItem("sayd-check",JSON.stringify(saved))}catch(err){}};
 
 document.querySelectorAll("[data-ic]").forEach(e=>e.innerHTML=ic(e.dataset.ic));{const pc=document.getElementById("praycard");pc.querySelector("summary").addEventListener("click",e=>e.preventDefault())}document.querySelectorAll("[data-sun]").forEach(e=>e.innerHTML=sunSym(1,1));
 {const L={fish:"تفاصيل نشاط السمك",tide:"تفاصيل المد والجزر",wave:"تفاصيل علو الموج",wind:"تفاصيل الريح والهبات",temp:"تفاصيل الحرارة والطقس",vis:"تفاصيل الرؤية والضباب"};
