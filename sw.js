@@ -1,4 +1,4 @@
-const C="sidi-ifni-v32";
+const C="sidi-ifni-v36";
 self.addEventListener("install",e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(["./","index.html","manifest.json","icons/icon-192.png","icons/icon-512.png"])).then(()=>self.skipWaiting()))});
 self.addEventListener("activate",e=>{e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!==C).map(x=>caches.delete(x)))).then(()=>self.clients.claim()))});
 const sig=r=>r.headers.get("etag")||r.headers.get("last-modified")||r.headers.get("content-length")||"";
